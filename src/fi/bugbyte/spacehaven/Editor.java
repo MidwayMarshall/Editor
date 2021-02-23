@@ -153,6 +153,9 @@ public class Editor {
 
                     storageTable.setRowHeight(18);
                     characterTable.setRowHeight(18);
+
+                    btnStorage.addActionListener(e1 -> storageData.setMinimumValuesTo25());
+                    btnSkill.addActionListener(e1 -> characterData.setLevelsTo10());
                 }
             }
         });
@@ -160,7 +163,7 @@ public class Editor {
 
     public static void main(String[] args) throws InterruptedException, IOException {
         MainClass.main(new String[] {""});
-        Thread.sleep(6000);
+        Thread.sleep(1000);
 //        new Thread(new Runnable() {
 //            public void run() {
                 JFrame frame = new JFrame("Editor");
@@ -181,6 +184,8 @@ public class Editor {
     private JButton initializeBtn;
     private JComboBox characterSelector;
     private JTable characterTable;
+    private JButton btnStorage;
+    private JButton btnSkill;
 
     private void createUIComponents() {
         // TODO: place custom component creation code here
@@ -253,6 +258,30 @@ public class Editor {
         public boolean isCellEditable(int rowIndex, int columnIndex) {
             return columnIndex == 1;
         }
+
+        public static boolean isInteger(String s) {
+            if(s.isEmpty()) return false;
+            for(int i = 0; i < s.length(); i++) {
+                if(i == 0 && s.charAt(i) == '-') {
+                    if(s.length() == 1) return false;
+                    else continue;
+                }
+                if(java.lang.Character.digit(s.charAt(i),10) < 0) return false;
+            }
+            return true;
+        }
+
+        public void setMinimumValuesTo25() {
+            for (Storage.StoredItem item : items) {
+                int i = item.elementaryId;
+                boolean b = isInteger(idToName.get(i));
+                if (!b) {
+                    if (item.inStorage < 25)
+                        item.inStorage = 25;
+                }
+            }
+            this.fireTableDataChanged();
+        }
     }
 
     private static class MyCharacterDataModel extends AbstractTableModel {
@@ -312,5 +341,11 @@ public class Editor {
             return columnIndex == 1;
         }
 
+        public void setLevelsTo10() {
+            for (Personality.Skill skill : skills) {
+                skill.level = 10;
+            }
+            this.fireTableDataChanged();
+        }
     }
 }
