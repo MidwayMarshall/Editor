@@ -44,7 +44,16 @@ public class EditorReflected {
                         Object oWorld = mWorld.invoke(oGUI);
                         Method mShips = oWorld.getClass().getMethod("getShips");
                         Object ships =  mShips.invoke(oWorld);
-                        Object oShip = arrayGet.invoke(ships, 1);
+                        int size = arraySize.getInt(ships);
+                        Method mIsPlayerShip = arrayGet.invoke(ships, 1).getClass().getMethod("isPlayerShip");
+                        Object oShip = null;
+                        for (int i = 0; i < size; i++){
+                            Object temp = arrayGet.invoke(ships, i);
+                            if ((Boolean) mIsPlayerShip.invoke(temp)) {
+                                oShip = temp;
+                                break;
+                            }
+                        }
                         Object characters = oShip.getClass().getMethod("getCharacters").invoke(oShip);
 
 
